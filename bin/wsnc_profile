@@ -1,10 +1,9 @@
 #!/usr/bin/env perl
-# Nicked from http://code.google.com/p/selenium-profiler/source/browse/trunk/web_profiler.py
+
+# Nicked from http://code.google.com/p/selenium-profiler/
 
 use strict;
 use warnings;
-
-#use feature qw/say/;
 
 use URI::Split qw/uri_split/;
 use WWW::Selenium;
