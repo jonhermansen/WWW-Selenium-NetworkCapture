@@ -2,6 +2,7 @@ package WWW::Selenium::NetworkCapture;
 
 our $VERSION = "0.01";
 
+# ABSTRACT: capture and report request data from Selenium / Firefox
 # Nicked from http://code.google.com/p/selenium-profiler/source/browse/trunk/web_profiler.py
 
 use XML::Simple qw/XMLin/;
