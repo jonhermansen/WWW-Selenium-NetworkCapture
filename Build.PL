@@ -11,5 +11,4 @@ my $build = Module::Build->new(
 
 $build->dispatch('build');
 $build->dispatch('test', verbose => 1);
-
-#$build->create_build_script;
+$build->create_build_script;
