@@ -5,10 +5,14 @@ my $build = Module::Build->new(
     license      => 'GPL',
     dist_version => '0.01',
     requires     => {
-	'WWW::Selenium' => '1.23'
+	DateTime => 0,
+	URI::Split => 0,
+	WWW::Selenium => 0,
+	XML::Simple => 0,
     },
 );
 
 $build->dispatch('build');
 $build->dispatch('test', verbose => 1);
+#$build->dispatch('install');
 $build->create_build_script;
