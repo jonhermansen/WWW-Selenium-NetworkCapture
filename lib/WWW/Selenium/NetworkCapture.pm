@@ -1,4 +1,7 @@
 package WWW::Selenium::NetworkCapture;
+
+our $VERSION = "0.01";
+
 # Nicked from http://code.google.com/p/selenium-profiler/source/browse/trunk/web_profiler.py
 
 use XML::Simple qw/XMLin/;
