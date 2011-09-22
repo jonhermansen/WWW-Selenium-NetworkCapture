@@ -54,7 +54,7 @@ sub run {
 	'captureNetworkTraffic=true'
     );
 
-    sleep 1;
+#    sleep 30;
 
     $sel->open($path);
     $sel->wait_for_page_to_load(60000);

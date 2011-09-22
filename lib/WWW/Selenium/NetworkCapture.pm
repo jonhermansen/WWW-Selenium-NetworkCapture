@@ -1,19 +1,62 @@
 package WWW::Selenium::NetworkCapture;
 
-our $VERSION = "0.01";
-
 # ABSTRACT: capture and report request data from Selenium / Firefox
 # Nicked from http://code.google.com/p/selenium-profiler/source/browse/trunk/web_profiler.py
 
+=pod
+
+=head1 NAME
+
+WWW::Selenium::NetworkCapture - capture and report request data from Selenium / Firefox
+
+=head1 VERSION
+
+Version 1.58
+
+=cut
+
+our $VERSION = '0.01';
+
+=head1 SYNOPSIS
+    use WWW::Selenium;
+    use WWW::Selenium::NetworkCapture;
+
+    my $sel = WWW::Selenium->new();
+
+    $sel->{session_id} = $sel->get_string(
+        "getNewBrowserSession",
+        $sel->{browser_start_command},
+        $sel->{browser_url},
+        undef,
+        'captureNetworkTraffic=true'
+    );
+
+
+    $sel->open($path);
+    my $traffic_xml = $sel->get_string('captureNetworkTraffic', 'xml');
+    my $netcap = WWW::Selenium::NetworkCapture->new($traffic_xml);
+
+=cut
+
 use XML::Simple qw/XMLin/;
 use DateTime::Format::Strptime;
+
+=head1 FUNCTIONS
+
+All functions listed below are exported to the calling namespace.
+
+=head2 new($xml_blob)
+
+Creates and returns a new instance of this class.
+
+=cut
 
 sub new {
     my ($class, $xml_blob) = @_;
 
     my %self;
     $self->{xml_blob} = $xml_blob;
-    if (length $xml_blob < 50) {
+    if (length($xml_blob) < 50) {
 	die;
     } else {
 	$self->{dom} = XMLin($xml_blob);
@@ -22,6 +65,12 @@ sub new {
     bless $self, $class or die "Can't bless $class: $!";
     return $self;
 }
+
+=head2 get_content_size()
+
+Returns the sum in bytes of all content received since the start of the session.
+
+=cut
 
 sub get_content_size {
     my ($self) = @_;
@@ -38,11 +87,23 @@ sub get_content_size {
     return $total_size;
 }
 
+=head2 get_num_requests()
+
+Returns the total number of requests made since the start of the session.
+
+=cut
+
 sub get_num_requests {
     my ($self) = @_;
 
     return scalar @{$self->{dom}->{entry}};
 }
+
+=head2 get_http_status_codes()
+
+Returns the total number of requests made since the start of the session.
+
+=cut
 
 sub get_http_status_codes {
     my ($self) = @_;
@@ -58,6 +119,12 @@ sub get_http_status_codes {
 
     return %status_map;
 }
+
+=head2 get_http_details()
+
+Returns the HTTP details of requests made since the start of the session.
+
+=cut
 
 sub get_http_details {
     my ($self) = @_;
@@ -76,6 +143,12 @@ sub get_http_details {
 
     return @http_details;
 }
+
+=head2 get_file_extension_stats()
+
+Returns the file extension statistics of each request made during the session
+
+=cut
 
 sub get_file_extension_stats {
     my ($self) = @_;
@@ -104,6 +177,12 @@ sub get_file_extension_stats {
     return %file_ext_map;
 }
 
+=head2 get_network_times()
+
+Returns ($start_first_request, $end_first_request, $end_last_request);
+
+=cut
+
 sub get_network_times {
     my ($self) = @_;
 
@@ -115,14 +194,14 @@ sub get_network_times {
     }
     @start_times = sort @start_times;
     @end_times = sort @end_times;
-    my $start_first_request = $self->convert_time($start_times[0]);
-    my $end_first_request = $self->convert_time($end_times[0]);
-    my $end_last_request = $self->convert_time($end_times[-1]);
+    my $start_first_request = $self->_convert_time($start_times[0]);
+    my $end_first_request = $self->_convert_time($end_times[0]);
+    my $end_last_request = $self->_convert_time($end_times[-1]);
 
     return ($start_first_request, $end_first_request, $end_last_request);
 }
 
-sub convert_time {
+sub _convert_time {
     my ($self, $date_string) = @_;
 
     if ($date_string =~ /-/) {
@@ -140,3 +219,21 @@ sub convert_time {
 }
 
 1;
+
+__END__
+
+=pod
+
+=head1 TO DO
+    Needs serious cleanup!
+
+=head1 BUGS
+    Probably lots.
+
+=head1 COPYRIGHT
+    Same as Perl.
+
+=head1 AUTHORS
+    Jon Hermansen <jherm@cpan.org>
+
+=cut
